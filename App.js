@@ -4,56 +4,78 @@ import "./App.css";
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
-  const winner = calculateWinner(board);
+  const [winner, setWinner] = useState(null);
+  const [isDraw, setIsDraw] = useState(false);
 
   const handleClick = (i) => {
-    //it handles the click and check whose turn will be next
+    // handle click event
+
+    if (winner || board[i] || isDraw) return;
+
     const newBoard = [...board];
-    if (winner || newBoard[i]) return;
     newBoard[i] = xIsNext ? "X" : "O";
     setBoard(newBoard);
     setXIsNext(!xIsNext);
+    const newWinner = calculateWinner(newBoard);
+
+    // Check for a draw
+    if (!newWinner && newBoard.every((square) => square)) {
+      setIsDraw(true);
+    }
+
+    setWinner(newWinner);
   };
 
-  const renderSquare = (
-    i // it will handling rendring of x and y
-  ) => (
+  const handleRestart = () => {
+    setBoard(Array(9).fill(null)); // Reset the board to an empty state
+    setXIsNext(true); // Set the starting player (X) as the first player again
+    setWinner(null); // Reset the winner
+    setIsDraw(false); //make the draw false
+  };
+  const renderSquare = (i) => (
     <button className="square" onClick={() => handleClick(i)}>
       {board[i]}
     </button>
   );
 
-  const status = winner
+  const status = isDraw
+    ? "Match is draw"
+    : winner
     ? `Winner: ${winner}`
     : `Next player: ${xIsNext ? "X" : "O"}`;
 
   return (
     <div className="App">
       <h1>Tic-Tac-Toe</h1>
-      <div className="board">
-        <div className="status">{status}</div>
-        <div className="board-row">
-          {renderSquare(0)}
-          {renderSquare(1)}
-          {renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {renderSquare(3)}
-          {renderSquare(4)}
-          {renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {renderSquare(6)}
-          {renderSquare(7)}
-          {renderSquare(8)}
+      <div>
+        <div className="board">
+          <div className="status">{status}</div>
+          <div className="board-row">
+            {renderSquare(0)}
+            {renderSquare(1)}
+            {renderSquare(2)}
+          </div>
+          <div className="board-row">
+            {renderSquare(3)}
+            {renderSquare(4)}
+            {renderSquare(5)}
+          </div>
+          <div className="board-row">
+            {renderSquare(6)}
+            {renderSquare(7)}
+            {renderSquare(8)}
+          </div>
         </div>
       </div>
+      <button className="restart-button" onClick={handleRestart}>
+        Restart Game
+      </button>
     </div>
   );
 }
 
 function calculateWinner(squares) {
-  // it will generate the winner
+  // function to declare winner
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -67,7 +89,6 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      // if all the three boxes have the same value means it is winner
       return squares[a];
     }
   }

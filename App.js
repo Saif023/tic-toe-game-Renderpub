@@ -47,6 +47,17 @@ function App() {
   return (
     <div className="App">
       <h1>Tic-Tac-Toe</h1>
+    <h2>Instruction To Play the Game</h2>
+      <p> Player 1 called X</p>
+      <p> Player 2 called O</p>
+      <p>
+        After Each click next Player will get chance to click on the box which
+        will be written on the box
+      </p>
+      <p>
+        if any one of the two Player able to click on the three consecutive
+        boxes then that player is <b>winner</b>
+      </p>
       <div>
         <div className="board">
           <div className="status">{status}</div>
